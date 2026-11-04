@@ -57,5 +57,6 @@ export DSH_HOME="${DSH_BUILD_HOME:-$(mktemp -d -t dsh-build-home.XXXXXX)}"
 echo "==> target linux-$ARCH, script $SCRIPT${FORMATS:+, formats $FORMATS}"
 ( cd "$UPSTREAM" && "$PNPM" install --frozen-lockfile )
 [[ -z "$FORMATS" ]] || export DSH_DESKTOP_TARGET_FORMATS="$FORMATS"
-"$PNPM" --dir "$UPSTREAM/apps/desktop" run "$SCRIPT"
+# Run inside the upstream tree so corepack honours its packageManager pin (pnpm 11).
+( cd "$UPSTREAM/apps/desktop" && "$PNPM" run "$SCRIPT" )
 echo "==> done: $UPSTREAM/apps/desktop/.desktop-build/targets/linux-$ARCH/unsigned-artifacts"
