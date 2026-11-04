@@ -66,7 +66,7 @@ Set `DSH_DESKTOP_LINUX_MAINTAINER="Name <email>"` to change the deb/rpm maintain
 
 ## What the patches change
 
-All changes are scoped to Linux; macOS and Windows behaviour is untouched.
+All changes are scoped to the Linux build. 0001–0020 keep the app 1:1 with the official one; 0021 is the one deliberate addition.
 
 | Patch | What it does |
 |---|---|
@@ -82,12 +82,17 @@ All changes are scoped to Linux; macOS and Windows behaviour is untouched.
 | 0013 | System tray (StatusNotifierItem) with a Linux PNG icon |
 | 0016 | Draw the same in-page caption menubar Windows uses, and hide the native menu bar |
 | 0020 | Turn on upstream's electron-updater for Linux when an https feed is configured (AppImage in place, deb/rpm through pkexec) |
+| 0021 | Add a **Don't ask again** checkbox to the welcome screen's API-key page, so **Set up later** can skip the sign-in prompt on every launch. Saving a key clears it. Signing out still shows the welcome screen. |
 
 Numbers 0014, 0015, 0018 and 0019 are intentionally unused.
 
 ## Credits
 
 The patch series is derived from [ffyfox/dsh-desktop-linux](https://github.com/ffyfox/dsh-desktop-linux) (MIT). That project's optional extras (glass and frameless window modes) are left out here so the app stays a 1:1 match with the official Desktop app. DeepSeek Harness is © DeepSeek-AI, MIT licensed.
+
+## Shipping a port-only fix
+
+To ship a change to the patches before DeepSeek's next release, run Actions → **build** → Run workflow with *release* checked and *revision* set to `1` (then `2`, …). That publishes `v<upstream>.<date>.<revision>`, for example `v0.2.2-rc.1.20261104.1`. Installed apps see it as newer than the plain upstream version and older than the next upstream release. This only works while upstream is on a prerelease (`-rc.N`) version.
 
 ## Updating to a new upstream release by hand
 

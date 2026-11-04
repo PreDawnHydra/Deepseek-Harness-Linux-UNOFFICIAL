@@ -9,6 +9,8 @@
 #   DSH_DESKTOP_LINUX_MAINTAINER  "Name <email>" written into deb/rpm metadata
 #   DSH_DESKTOP_LINUX_UPDATE_URL  https feed the app's updater polls (unset: no auto-update), e.g.
 #                                 https://github.com/<owner>/<repo>/releases/latest/download
+#   DSH_BUILD_VERSION             publish under a version that extends the upstream one, for port-only
+#                                 fixes, e.g. 0.2.2-rc.1.20261104.1 (upstream's --build-version rules)
 #   DSH_BUILD_HOME                isolated dsh data dir used during the build (default: mktemp)
 # Artifacts: upstream/apps/desktop/.desktop-build/targets/linux-<arch>/unsigned-artifacts/
 set -euo pipefail
@@ -66,5 +68,7 @@ echo "==> target linux-$ARCH, script $SCRIPT${FORMATS:+, formats $FORMATS}"
 ( cd "$UPSTREAM" && "$PNPM" install --frozen-lockfile )
 [[ -z "$FORMATS" ]] || export DSH_DESKTOP_TARGET_FORMATS="$FORMATS"
 # Run inside the upstream tree so corepack honours its packageManager pin (pnpm 11).
-( cd "$UPSTREAM/apps/desktop" && "$PNPM" run "$SCRIPT" )
+BUILD_ARGS=()
+[[ -z "${DSH_BUILD_VERSION:-}" ]] || BUILD_ARGS=(-- --build-version "$DSH_BUILD_VERSION")
+( cd "$UPSTREAM/apps/desktop" && "$PNPM" run "$SCRIPT" "${BUILD_ARGS[@]}" )
 echo "==> done: $UPSTREAM/apps/desktop/.desktop-build/targets/linux-$ARCH/unsigned-artifacts"
