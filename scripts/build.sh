@@ -29,6 +29,7 @@ node --input-type=module -e 'process.exit(process.features.typescript ? 0 : 1)' 
 PNPM="$(command -v pnpm || true)"
 if [[ -z "$PNPM" || "$("$PNPM" --version 2>/dev/null)" != 11.* || "$(head -c2 "$(readlink -f "$PNPM")")" != "#!" ]]; then
   echo "==> using corepack pnpm (install pnpm 11 with npm or corepack to skip this)"
+  mkdir -p "$ROOT/.tools"
   corepack enable --install-directory "$ROOT/.tools" pnpm
   PNPM="$ROOT/.tools/pnpm"
 fi
