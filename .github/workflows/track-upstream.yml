@@ -1,0 +1,92 @@
+name: track-upstream
+# Every six hours: find DeepSeek's newest dsh-v* release tag, move the pin to it if the patches still
+# apply, then build and publish a release so installed apps update. If the patches no longer apply,
+# open an issue instead of shipping a broken build.
+on:
+  schedule:
+    - cron: '23 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency: track-upstream
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    outputs:
+      release: ${{ steps.decide.outputs.release }}
+      ref: ${{ steps.decide.outputs.ref }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '24' }
+      - name: Find the newest upstream tag
+        id: latest
+        run: |
+          source upstream.env
+          git ls-remote --tags --refs "$UPSTREAM_REPO" 'refs/tags/dsh-v*' | awk '{print $2}' | sed 's|refs/tags/||' > tags.txt
+          latest="$(node scripts/newest-tag.mjs tags.txt)"
+          echo "pinned $UPSTREAM_TAG, newest upstream $latest"
+          echo "tag=$latest" >> "$GITHUB_OUTPUT"
+      - name: Decide
+        id: decide
+        env:
+          GH_TOKEN: ${{ github.token }}
+          LATEST: ${{ steps.latest.outputs.tag }}
+        run: |
+          source upstream.env
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [[ "$LATEST" != "$UPSTREAM_TAG" ]]; then
+            ./scripts/fetch-upstream.sh "$LATEST"
+            if ! ./scripts/apply-patches.sh --check > apply.log 2>&1; then
+              cat apply.log
+              title="Patches no longer apply to $LATEST"
+              if [[ -z "$(gh issue list --state open --search "in:title \"$title\"" --json number --jq '.[].number')" ]]; then
+                gh issue create --title "$title" --body "The scheduled upstream check found \`$LATEST\`, but the patch series no longer applies, so no release was published. Installed apps stay on ${UPSTREAM_TAG#dsh-v}.
+
+          \`\`\`
+          $(tail -40 apply.log)
+          \`\`\`
+
+          Rebase the failing patch onto \`$LATEST\` (see README, *Updating to a new upstream release*)."
+              fi
+              exit 1
+            fi
+            commit="$(git -C upstream rev-parse HEAD)"
+            sed -i "s|^UPSTREAM_TAG=.*|UPSTREAM_TAG=$LATEST|; s|^UPSTREAM_COMMIT=.*|UPSTREAM_COMMIT=$commit|" upstream.env
+            sed -i "s#^| Upstream tag | .* |\$#| Upstream tag | \`$LATEST\` |#; s#^| Upstream commit | .* |\$#| Upstream commit | \`$commit\` |#" README.md
+            git add upstream.env README.md
+            git commit -m "Track upstream $LATEST"
+            git push origin HEAD:main
+            source upstream.env
+          fi
+          if gh release view "v${UPSTREAM_TAG#dsh-v}" >/dev/null 2>&1; then
+            echo "v${UPSTREAM_TAG#dsh-v} is already released"
+            # Public repos lose scheduled workflows after 60 days without activity; a quiet upstream
+            # must not switch this tracker off.
+            last="$(git log -1 --format=%ct)"
+            if (( $(date +%s) - last > 45 * 86400 )); then
+              date -u +%FT%TZ > .github/last-upstream-check
+              git add .github/last-upstream-check
+              git commit -m "Keep the upstream tracker active"
+              git push origin HEAD:main
+            fi
+            echo "release=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "release=true" >> "$GITHUB_OUTPUT"
+          fi
+          echo "ref=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: check
+    if: ${{ needs.check.outputs.release == 'true' }}
+    uses: ./.github/workflows/build.yml
+    with:
+      release: true
+      ref: ${{ needs.check.outputs.ref }}
+    permissions:
+      contents: write

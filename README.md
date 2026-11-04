@@ -4,7 +4,7 @@ An unofficial port of the [DeepSeek Harness](https://github.com/deepseek-ai/deep
 
 Upstream ships the Desktop app only for macOS and Windows (`apps/desktop/packaging/README.md`: *"Linux is not a supported Desktop release target."*). This port is the same official Electron application built from upstream source with a small patch series. It is not a separate reimplementation.
 
-> **Not affiliated with DeepSeek.** The builds are unsigned and have no auto-update channel. Read the upstream [safety notice](https://github.com/deepseek-ai/deepseek-harness/blob/master/SAFETY.md) before you run it.
+> **Not affiliated with DeepSeek.** The builds are unsigned. Read the upstream [safety notice](https://github.com/deepseek-ai/deepseek-harness/blob/master/SAFETY.md) before you run it.
 
 **You may not need this.** The harness CLI and Web UI already run on Linux officially:
 
@@ -25,7 +25,7 @@ The pin lives in [`upstream.env`](upstream.env).
 
 ## Install
 
-Download the artifacts from this repo's Releases page, or from the latest **build** workflow run under Actions.
+Download the newest package from this repo's [Releases](../../releases/latest) page. You only do this once: after that, the app updates itself.
 
 | Distribution | Format | How |
 |---|---|---|
@@ -34,6 +34,19 @@ Download the artifacts from this repo's Releases page, or from the latest **buil
 | Fedora / RHEL | rpm | `sudo dnf install ./deepseek-harness-*.rpm` |
 
 The app keeps its data in `~/.dsh/profiles/desktop`, the same layout as on macOS and Windows.
+
+## Automatic updates
+
+Installed copies keep themselves current with DeepSeek's releases, and nobody has to rebuild anything.
+
+1. **Tracking upstream.** The [`track-upstream`](.github/workflows/track-upstream.yml) workflow checks DeepSeek's `dsh-v*` tags every six hours. When a newer tag appears, it checks that the patch series still applies, moves the pin in `upstream.env`, builds x64 and arm64, and publishes a release here. If a patch no longer applies, it opens an issue and ships nothing.
+2. **Updating installed apps.** Upstream's own updater (the same check, download and restart flow macOS and Windows use, plus **Check for Updates** in the app menu) is enabled on Linux by patch 0020. It polls `releases/latest/download/nightly-linux.yml` (or `nightly-linux-arm64.yml`) in this repo.
+   - **AppImage:** the file replaces itself in place. Keep it somewhere you can write to, such as `~/Applications`.
+   - **deb / rpm:** the new package downloads and installs after a password prompt (pkexec).
+
+The feed has to be public, so this repository must stay public for updates to work. You can run the tracker by hand under Actions → track-upstream → Run workflow. GitHub disables scheduled workflows in a repo with no activity for 60 days, so the tracker makes a small keep-alive commit when upstream has been quiet for 45 days.
+
+Builds from source get updates only when you set `DSH_DESKTOP_LINUX_UPDATE_URL` (see below).
 
 ## Build from source
 
@@ -49,7 +62,7 @@ cd Deepseek-Harness-Linux-UNOFFICIAL
 
 Artifacts land in `upstream/apps/desktop/.desktop-build/targets/linux-<arch>/unsigned-artifacts/`. Build on the target architecture; cross-building is not supported because packaging runs the target's Electron, Node and Python.
 
-Set `DSH_DESKTOP_LINUX_MAINTAINER="Name <email>"` to change the deb/rpm maintainer field.
+Set `DSH_DESKTOP_LINUX_MAINTAINER="Name <email>"` to change the deb/rpm maintainer field, and `DSH_DESKTOP_LINUX_UPDATE_URL=https://github.com/<owner>/<repo>/releases/latest/download` to make the build auto-update from a feed.
 
 ## What the patches change
 
@@ -68,15 +81,18 @@ All changes are scoped to Linux; macOS and Windows behaviour is untouched.
 | 0012 | Read the build commit from the environment when building from a release archive |
 | 0013 | System tray (StatusNotifierItem) with a Linux PNG icon |
 | 0016 | Draw the same in-page caption menubar Windows uses, and hide the native menu bar |
+| 0020 | Turn on upstream's electron-updater for Linux when an https feed is configured (AppImage in place, deb/rpm through pkexec) |
 
-Numbers 0014 and 0015 are intentionally unused.
+Numbers 0014, 0015, 0018 and 0019 are intentionally unused.
 
 ## Credits
 
 The patch series is derived from [ffyfox/dsh-desktop-linux](https://github.com/ffyfox/dsh-desktop-linux) (MIT). That project's optional extras (glass and frameless window modes) are left out here so the app stays a 1:1 match with the official Desktop app. DeepSeek Harness is © DeepSeek-AI, MIT licensed.
 
-## Updating to a new upstream release
+## Updating to a new upstream release by hand
+
+The tracker normally does this for you. When it opens a "patches no longer apply" issue:
 
 1. Change `UPSTREAM_TAG` and `UPSTREAM_COMMIT` in `upstream.env`.
 2. `REFRESH=1 ./scripts/fetch-upstream.sh && ./scripts/apply-patches.sh --check`
-3. Fix any patch that no longer applies, regenerate it with `git -C upstream diff -- <files>`, and rebuild.
+3. Fix any patch that no longer applies, regenerate it with `git -C upstream diff -- <files>`, and push. The next tracker run publishes the release.

@@ -7,6 +7,8 @@
 #   ./scripts/build.sh --dir      # unpacked directory only (fastest)
 # Env:
 #   DSH_DESKTOP_LINUX_MAINTAINER  "Name <email>" written into deb/rpm metadata
+#   DSH_DESKTOP_LINUX_UPDATE_URL  https feed the app's updater polls (unset: no auto-update), e.g.
+#                                 https://github.com/<owner>/<repo>/releases/latest/download
 #   DSH_BUILD_HOME                isolated dsh data dir used during the build (default: mktemp)
 # Artifacts: upstream/apps/desktop/.desktop-build/targets/linux-<arch>/unsigned-artifacts/
 set -euo pipefail
@@ -49,6 +51,12 @@ esac
 ENV_FILE="$UPSTREAM/apps/desktop/.env.linux"
 MAINTAINER="${DSH_DESKTOP_LINUX_MAINTAINER:-dsh-desktop-linux builder <builder@localhost>}"
 sed "s|^DSH_DESKTOP_LINUX_MAINTAINER=.*|DSH_DESKTOP_LINUX_MAINTAINER=\"$MAINTAINER\"|" "$ENV_FILE.example" > "$ENV_FILE"
+if [[ -n "${DSH_DESKTOP_LINUX_UPDATE_URL:-}" ]]; then
+  echo "DSH_DESKTOP_LINUX_UPDATE_URL=$DSH_DESKTOP_LINUX_UPDATE_URL" >> "$ENV_FILE"
+  echo "==> auto-update feed: $DSH_DESKTOP_LINUX_UPDATE_URL"
+else
+  echo "==> no DSH_DESKTOP_LINUX_UPDATE_URL: this build will not auto-update"
+fi
 
 # Never let the build touch the real ~/.dsh.
 export DSH_HOME="${DSH_BUILD_HOME:-$(mktemp -d -t dsh-build-home.XXXXXX)}"

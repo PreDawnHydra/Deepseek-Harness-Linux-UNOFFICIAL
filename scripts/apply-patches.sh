@@ -14,9 +14,12 @@ ASSET_DST="$UPSTREAM/apps/desktop/resources/tray-linux.png"
 case "$MODE" in
   --check)
     # Patches build on each other, so check them cumulatively in a throwaway index.
-    tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"; git -C "$UPSTREAM" worktree remove --force "$tmp/wt" 2>/dev/null || true' EXIT
+    tmp="$(mktemp -d)"; trap 'git -C "$UPSTREAM" worktree remove --force "$tmp/wt" 2>/dev/null || true; rm -rf "$tmp"' EXIT
     git -C "$UPSTREAM" worktree add -q --detach "$tmp/wt" HEAD
-    for p in "${PATCHES[@]}"; do git -C "$tmp/wt" apply "$p" && echo "ok   $(basename "$p")"; done ;;
+    for p in "${PATCHES[@]}"; do
+      git -C "$tmp/wt" apply "$p" || { echo "FAIL $(basename "$p")" >&2; exit 1; }
+      echo "ok   $(basename "$p")"
+    done ;;
   --revert)
     for (( i=${#PATCHES[@]}-1; i>=0; i-- )); do git -C "$UPSTREAM" apply -R "${PATCHES[$i]}"; echo "reverted $(basename "${PATCHES[$i]}")"; done
     rm -f "$ASSET_DST" ;;
