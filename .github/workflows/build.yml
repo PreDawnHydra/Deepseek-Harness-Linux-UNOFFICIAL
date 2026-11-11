@@ -95,6 +95,10 @@ jobs:
           ls -la dist
           # The updater fails closed without its feed file, so a build without one is a broken release.
           ls dist/nightly-linux*.yml
+          # Settings > General > Update channel offers Stable and Nightly. The port has one release
+          # stream, so both channels read the same feed file.
+          for f in dist/nightly-linux*.yml; do cp "$f" "dist/stable-${f#dist/nightly-}"; done
+          ls dist/stable-linux*.yml
       - uses: actions/upload-artifact@v4
         with:
           name: deepseek-harness-linux-${{ matrix.arch }}

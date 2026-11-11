@@ -1,5 +1,5 @@
 diff --git a/apps/desktop/scripts/dev.ts b/apps/desktop/scripts/dev.ts
-index 37515c2..bf23b40 100644
+index 37515c20..bf23b406 100644
 --- a/apps/desktop/scripts/dev.ts
 +++ b/apps/desktop/scripts/dev.ts
 @@ -8,6 +8,7 @@ import { parseArgs } from 'node:util'
@@ -39,7 +39,7 @@ index 37515c2..bf23b40 100644
  }
  
 diff --git a/apps/desktop/scripts/sign-primary-runtime.ts b/apps/desktop/scripts/sign-primary-runtime.ts
-index a15e378..4dde1a7 100644
+index a15e3786..4dde1a7d 100644
 --- a/apps/desktop/scripts/sign-primary-runtime.ts
 +++ b/apps/desktop/scripts/sign-primary-runtime.ts
 @@ -76,7 +76,8 @@ async function main(): Promise<void> {
@@ -53,7 +53,7 @@ index a15e378..4dde1a7 100644
          } else {
            await signWindowsPrimaryRuntime(join(paths.runtime, 'primary-runtime'), { ...options, smoke: smokePrimaryRuntime })
 diff --git a/apps/desktop/scripts/smoke-packaged-runtime.ts b/apps/desktop/scripts/smoke-packaged-runtime.ts
-index 6c3c12c..6cd8184 100644
+index 6c3c12c8..6cd8184a 100644
 --- a/apps/desktop/scripts/smoke-packaged-runtime.ts
 +++ b/apps/desktop/scripts/smoke-packaged-runtime.ts
 @@ -2,6 +2,7 @@
@@ -97,13 +97,13 @@ index 6c3c12c..6cd8184 100644
 +await smokePreparedRuntime(join(appRoot, 'dsh'),
 +  desktopNodeRuntime(packaged.platform, executable, join(resourcesRuntime, 'primary-runtime')), resourcesRuntime, descriptor)
 diff --git a/apps/desktop/scripts/smoke-prepared-runtime.ts b/apps/desktop/scripts/smoke-prepared-runtime.ts
-index e6afd57..87729bc 100644
+index a67bc28c..0fbc8107 100644
 --- a/apps/desktop/scripts/smoke-prepared-runtime.ts
 +++ b/apps/desktop/scripts/smoke-prepared-runtime.ts
 @@ -5,7 +5,7 @@ import { tmpdir } from 'node:os'
  import { join, resolve } from 'node:path'
  import { promisify } from 'node:util'
- import { runtimeArchivePath } from '../../desktop-host/src/office-engine.ts'
+ import { runtimeArchivePath } from '../../desktop-host/src/cli.ts'
 -import { desktopNodeEnvironment } from '../src/node-environment.ts'
 +import { desktopNodeEnvironment, type DesktopNodeRuntime } from '../src/node-environment.ts'
  import type { DesktopRuntimeDescriptor } from '../src/runtime-tree.ts'
@@ -148,10 +148,10 @@ index e6afd57..87729bc 100644
      await rm(cache, { recursive: true, force: true })
    }
 diff --git a/apps/desktop/scripts/smoke-runtime.ts b/apps/desktop/scripts/smoke-runtime.ts
-index bbc2d3e..d0a3894 100644
+index fa2b2f5c..bc303ef5 100644
 --- a/apps/desktop/scripts/smoke-runtime.ts
 +++ b/apps/desktop/scripts/smoke-runtime.ts
-@@ -9,20 +9,21 @@ import { promisify } from 'node:util'
+@@ -9,6 +9,7 @@ import { promisify } from 'node:util'
  import { fileURLToPath } from 'node:url'
  import { readPrimaryRuntime, workspaceDependencyPaths } from '../../../packages/skill/tool-workspace-dependencies/src/index.ts'
  import { DesktopHostProcess } from '../src/host-process.ts'
@@ -159,8 +159,9 @@ index bbc2d3e..d0a3894 100644
  import { createPluginProfile } from '../src/project-manager.ts'
  import type { DesktopRuntimeDescriptor } from '../src/runtime-tree.ts'
  
- /**
-  * Check CLI package operations, Host startup, its frontend, external plugins and real Office-to-PDF conversion.
+@@ -29,14 +30,14 @@ export function assertOfficeSkillsLoadable(results: ReadonlyArray<{ readonly nam
+  * Check CLI package operations, Host startup, its frontend, external plugins, packaged Office skill loading,
+  * and real Office rendering, conversion, and recalculation.
   * @param root - Materialized dsh resources.
 - * @param node - Prepared target Electron executable.
 + * @param node - Node runtime that will host the payload.
@@ -175,7 +176,7 @@ index bbc2d3e..d0a3894 100644
  ): Promise<void> {
    const home = mkdtempSync(join(tmpdir(), 'dsh-desktop-smoke-'))
    const profile = join(home, 'profiles', 'desktop')
-@@ -59,7 +60,7 @@ export function apply(ctx) {
+@@ -73,7 +74,7 @@ export function apply(ctx) {
      writeFileSync(join(installedPlugin, 'bundle.yml'), `- insert:\n    - id: ${installedName}\n      name: ${installedName}\n      inject: [webServer]\n`)
      appendFileSync(join(profile, 'pnpm-workspace.yaml'), 'offline: true\nupdateNotifier: false\n')
      const cli = join(root, 'node_modules', '@deepseek-ai', 'dsh-desktop-host', 'lib', 'cli.js')
@@ -185,7 +186,7 @@ index bbc2d3e..d0a3894 100644
        { cwd: home, env: { ...hostEnvironment, ELECTRON_RUN_AS_NODE: '1' }, timeout: 120_000, windowsHide: true })
      await runCli(['add', `file:${installedPlugin}`, '--offline', '--ignore-scripts'])
 diff --git a/apps/desktop/tests/fixtures/pnpm-smoke.mjs b/apps/desktop/tests/fixtures/pnpm-smoke.mjs
-index 5d16769..26a671b 100644
+index 5d16769a..26a671b6 100644
 --- a/apps/desktop/tests/fixtures/pnpm-smoke.mjs
 +++ b/apps/desktop/tests/fixtures/pnpm-smoke.mjs
 @@ -1,4 +1,4 @@
@@ -232,7 +233,7 @@ index 5d16769..26a671b 100644
 +  console.log('desktop pnpm: offline installation and shipped Node package script passed')
  }
 diff --git a/apps/desktop/tests/fixtures/runtime-payload-smoke.mjs b/apps/desktop/tests/fixtures/runtime-payload-smoke.mjs
-index 3cda38c..2aec241 100644
+index 3cda38c6..2aec2410 100644
 --- a/apps/desktop/tests/fixtures/runtime-payload-smoke.mjs
 +++ b/apps/desktop/tests/fixtures/runtime-payload-smoke.mjs
 @@ -1,4 +1,4 @@
@@ -251,7 +252,7 @@ index 3cda38c..2aec241 100644
  assert.equal(process.arch, descriptor.arch)
  const resourcesRuntime = process.argv[3] ?? join(dirname(root), 'runtime')
 diff --git a/apps/desktop/tests/prepared-runtime-smoke.spec.ts b/apps/desktop/tests/prepared-runtime-smoke.spec.ts
-index c4c840c..0b21dc3 100644
+index c4c840c0..0b21dc3b 100644
 --- a/apps/desktop/tests/prepared-runtime-smoke.spec.ts
 +++ b/apps/desktop/tests/prepared-runtime-smoke.spec.ts
 @@ -37,7 +37,8 @@ it('retains payload progress and termination details when the child fails', asyn

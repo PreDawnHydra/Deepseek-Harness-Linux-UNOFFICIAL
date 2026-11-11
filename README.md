@@ -18,8 +18,8 @@ This port is for people who want the native Desktop window, tray and bundled run
 
 | | |
 |---|---|
-| Upstream tag | `dsh-v0.2.2-rc.1` |
-| Upstream commit | `66491b05e3f05ad35bcdd4f6cd7ed26041d9e3db` |
+| Upstream tag | `dsh-v0.2.2-rc.2` |
+| Upstream commit | `ddac96760b6edf8fa0fe17cbdcf0b512f4c12b2c` |
 
 The pin lives in [`upstream.env`](upstream.env).
 
@@ -43,6 +43,7 @@ Installed copies keep themselves current with DeepSeek's releases, and nobody ha
 2. **Updating installed apps.** Upstream's own updater (the same check, download and restart flow macOS and Windows use, plus **Check for Updates** in the app menu) is enabled on Linux by patch 0020. It polls `releases/latest/download/nightly-linux.yml` (or `nightly-linux-arm64.yml`) in this repo.
    - **AppImage:** the file replaces itself in place. Keep it somewhere you can write to, such as `~/Applications`.
    - **deb / rpm:** the new package downloads and installs after a password prompt (pkexec).
+   - **Update channel:** the Stable / Nightly choice under Settings → General works, but this port has one release stream, so both channels get the same builds. Each release carries matching `stable-linux*.yml` files for that.
 
 The feed has to be public, so this repository must stay public for updates to work. You can run the tracker by hand under Actions → track-upstream → Run workflow. GitHub disables scheduled workflows in a repo with no activity for 60 days, so the tracker makes a small keep-alive commit when upstream has been quiet for 45 days.
 
