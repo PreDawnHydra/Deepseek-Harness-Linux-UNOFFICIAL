@@ -1,5 +1,5 @@
 diff --git a/apps/desktop/package.json b/apps/desktop/package.json
-index f13ba317..2f8783da 100644
+index 505625c57f..cfa65bdcc8 100644
 --- a/apps/desktop/package.json
 +++ b/apps/desktop/package.json
 @@ -39,6 +39,10 @@
@@ -14,7 +14,7 @@ index f13ba317..2f8783da 100644
      "upload:mac:x64": "tsx scripts/upload-target.ts mac-x64",
      "upload:win:x64": "tsx scripts/upload-target.ts win-x64",
 diff --git a/packages/client/ui-brand-official/src/client/index.ts b/packages/client/ui-brand-official/src/client/index.ts
-index e5dc78b0..a8cfe083 100644
+index e5dc78b099..a8cfe0838d 100644
 --- a/packages/client/ui-brand-official/src/client/index.ts
 +++ b/packages/client/ui-brand-official/src/client/index.ts
 @@ -18,7 +18,10 @@ export function apply(ctx: ClientContext): void {
@@ -30,7 +30,7 @@ index e5dc78b0..a8cfe083 100644
      ctx.slots.inject('sidebar.brand.name', function* () {
        yield ctx.slots.register({ name: 'sidebar.brand.mark' }, OfficialBrandMark)
 diff --git a/packages/client/ui-brand-official/tests/browser-plugin.client.spec.tsx b/packages/client/ui-brand-official/tests/browser-plugin.client.spec.tsx
-index 306023be..5d340f2f 100644
+index 306023be8f..5d340f2f71 100644
 --- a/packages/client/ui-brand-official/tests/browser-plugin.client.spec.tsx
 +++ b/packages/client/ui-brand-official/tests/browser-plugin.client.spec.tsx
 @@ -46,13 +46,25 @@ describe('official browser-brand plugin', () => {
@@ -64,7 +64,7 @@ index 306023be..5d340f2f 100644
  
    it('fills declarations before or after apply and removes every occupant on teardown', async () => {
 diff --git a/scripts/client-build-environment.client.spec.ts b/scripts/client-build-environment.client.spec.ts
-index 43482848..06154f0d 100644
+index 4348284834..06154f0d31 100644
 --- a/scripts/client-build-environment.client.spec.ts
 +++ b/scripts/client-build-environment.client.spec.ts
 @@ -156,6 +156,7 @@ describe('client build environment', () => {
@@ -76,7 +76,7 @@ index 43482848..06154f0d 100644
        DSH_CLIENT_VERSION: '1.2.3',
        ...(dirty === 'true' ? { DSH_CLIENT_GIT_DIRTY: 'true' } : {}),
 diff --git a/scripts/client-build-environment.ts b/scripts/client-build-environment.ts
-index 6eed371b..646acbcd 100644
+index 6eed371b08..646acbcd8f 100644
 --- a/scripts/client-build-environment.ts
 +++ b/scripts/client-build-environment.ts
 @@ -206,6 +206,9 @@ export function resolveClientBuildEnvironment(

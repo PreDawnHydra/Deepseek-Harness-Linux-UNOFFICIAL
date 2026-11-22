@@ -1,5 +1,5 @@
 diff --git a/apps/desktop/src/main.ts b/apps/desktop/src/main.ts
-index 3d2a0ecf..4fdf59bb 100644
+index 976721e186..b5d8b34f5f 100644
 --- a/apps/desktop/src/main.ts
 +++ b/apps/desktop/src/main.ts
 @@ -297,6 +297,9 @@ function createWindow(preload: string, show = false, primary = false): BrowserWi
@@ -22,7 +22,7 @@ index 3d2a0ecf..4fdf59bb 100644
            ? { label: messages[item.role as keyof typeof messages] } : {}),
          accelerator: '',
        }))).popup({ window })
-@@ -1275,7 +1279,8 @@ async function main(): Promise<void> {
+@@ -1284,7 +1288,8 @@ async function main(): Promise<void> {
      ...(process.platform === 'win32' ? { icon: nativeImage.createFromPath(trayIconPath) } : {}),
    })
  
@@ -32,7 +32,7 @@ index 3d2a0ecf..4fdf59bb 100644
      ipcMain.handle(DESKTOP_IPC.windowsMenu, (event, name: unknown, x: unknown, y: unknown) => {
        assertDesktopSender(event, ['app'])
        if (mainWindow === undefined || event.sender !== mainWindow.webContents
-@@ -1316,7 +1321,8 @@ async function main(): Promise<void> {
+@@ -1325,7 +1330,8 @@ async function main(): Promise<void> {
        // Empty colors precede client stylesheet installation; only CSS color values cross IPC.
        const validColor = (value: unknown): value is string => typeof value === 'string'
          && /^(?:#[\da-f]{3,8}|rgba?\([\d.,%\s]+\))$/iu.test(value)
@@ -43,7 +43,7 @@ index 3d2a0ecf..4fdf59bb 100644
    }
  
 diff --git a/apps/desktop/src/preload-windows.ts b/apps/desktop/src/preload-windows.ts
-index 5b9ed756..f17cbdb6 100644
+index 5b9ed75661..f17cbdb60c 100644
 --- a/apps/desktop/src/preload-windows.ts
 +++ b/apps/desktop/src/preload-windows.ts
 @@ -4,9 +4,11 @@ import { ipcRenderer } from 'electron'
@@ -61,7 +61,7 @@ index 5b9ed756..f17cbdb6 100644
      const root = document.documentElement
      root.dataset.windowsTitlebar = ''
 diff --git a/apps/desktop/src/welcome-window.ts b/apps/desktop/src/welcome-window.ts
-index 61fda9e3..364f5805 100644
+index 61fda9e36a..364f580588 100644
 --- a/apps/desktop/src/welcome-window.ts
 +++ b/apps/desktop/src/welcome-window.ts
 @@ -59,6 +59,8 @@ let disposeActiveHandlers: (() => void) | undefined
@@ -74,10 +74,10 @@ index 61fda9e3..364f5805 100644
    let active = true
    const disposeHandlers = (): void => {
 diff --git a/apps/desktop/tests/main-startup.spec.ts b/apps/desktop/tests/main-startup.spec.ts
-index 8d49aba6..a80dbf89 100644
+index 866267febe..67ac171f7a 100644
 --- a/apps/desktop/tests/main-startup.spec.ts
 +++ b/apps/desktop/tests/main-startup.spec.ts
-@@ -130,6 +130,7 @@ const harness = await vi.hoisted(async () => {
+@@ -135,6 +135,7 @@ const harness = await vi.hoisted(async () => {
      }
      static getAllWindows() { return windows.filter(window => !window.destroyed) }
      setMenu() {}
@@ -86,7 +86,7 @@ index 8d49aba6..a80dbf89 100644
      setBounds() {}
      setTitle = vi.fn()
 diff --git a/apps/desktop/tests/preload-windows.client.spec.ts b/apps/desktop/tests/preload-windows.client.spec.ts
-index e59b7ebb..735b77f9 100644
+index e59b7ebbeb..735b77f9af 100644
 --- a/apps/desktop/tests/preload-windows.client.spec.ts
 +++ b/apps/desktop/tests/preload-windows.client.spec.ts
 @@ -17,16 +17,8 @@ afterEach(() => {
@@ -139,7 +139,7 @@ index e59b7ebb..735b77f9 100644
    syncWindowsAppearance()
    expect(send).not.toHaveBeenCalled()
 diff --git a/apps/desktop/tests/welcome-startup.spec.ts b/apps/desktop/tests/welcome-startup.spec.ts
-index 1f9bc8a5..2c226ec5 100644
+index 9e365f932b..e7a5e0afad 100644
 --- a/apps/desktop/tests/welcome-startup.spec.ts
 +++ b/apps/desktop/tests/welcome-startup.spec.ts
 @@ -77,6 +77,7 @@ vi.mock('electron', () => ({
@@ -151,7 +151,7 @@ index 1f9bc8a5..2c226ec5 100644
      isMinimized() { return false }
      restore = vi.fn()
 diff --git a/apps/desktop/tests/welcome-window.spec.ts b/apps/desktop/tests/welcome-window.spec.ts
-index 6d2807c4..2100de70 100644
+index 6d2807c425..2100de70f0 100644
 --- a/apps/desktop/tests/welcome-window.spec.ts
 +++ b/apps/desktop/tests/welcome-window.spec.ts
 @@ -33,6 +33,7 @@ function createWindow() {

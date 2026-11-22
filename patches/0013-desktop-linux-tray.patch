@@ -1,5 +1,5 @@
 diff --git a/apps/desktop/scripts/electron-builder-config.mjs b/apps/desktop/scripts/electron-builder-config.mjs
-index 64aafc39..5376fae7 100644
+index a08fdcc0d6..152d7c0d91 100644
 --- a/apps/desktop/scripts/electron-builder-config.mjs
 +++ b/apps/desktop/scripts/electron-builder-config.mjs
 @@ -174,8 +174,10 @@ export function createElectronBuilderConfig(
@@ -15,7 +15,7 @@ index 64aafc39..5376fae7 100644
      mac: {
        icon: fileURLToPath(new URL('../resources/icon-macos.png', import.meta.url)),
 diff --git a/apps/desktop/scripts/render-tray-icon.ts b/apps/desktop/scripts/render-tray-icon.ts
-index 01bacdea..b857c541 100644
+index 01bacdea5e..b857c541cc 100644
 --- a/apps/desktop/scripts/render-tray-icon.ts
 +++ b/apps/desktop/scripts/render-tray-icon.ts
 @@ -1,11 +1,14 @@
@@ -102,7 +102,7 @@ index 01bacdea..b857c541 100644
  
  if (process.argv[1] !== undefined && import.meta.filename === resolve(process.argv[1])) await main()
 diff --git a/apps/desktop/src/background-notice.ts b/apps/desktop/src/background-notice.ts
-index c2a0007d..64053e43 100644
+index c2a0007d2e..64053e4322 100644
 --- a/apps/desktop/src/background-notice.ts
 +++ b/apps/desktop/src/background-notice.ts
 @@ -1,4 +1,4 @@
@@ -112,10 +112,10 @@ index c2a0007d..64053e43 100644
  import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
  import { dirname } from 'node:path'
 diff --git a/apps/desktop/src/main.ts b/apps/desktop/src/main.ts
-index 5c2a2a3a..3d2a0ecf 100644
+index 1b5869f29a..976721e186 100644
 --- a/apps/desktop/src/main.ts
 +++ b/apps/desktop/src/main.ts
-@@ -1243,15 +1243,22 @@ async function main(): Promise<void> {
+@@ -1252,15 +1252,22 @@ async function main(): Promise<void> {
      tray?.relabel()
    }
    refreshApplicationMenu()
@@ -142,7 +142,7 @@ index 5c2a2a3a..3d2a0ecf 100644
        locale: () => locale, show: ordinaryMessageBox, focus: () => { updateDialog.focus() } })
      : undefined
 diff --git a/apps/desktop/src/tray.ts b/apps/desktop/src/tray.ts
-index b2ce416b..1764a250 100644
+index b2ce416bbc..1764a25020 100644
 --- a/apps/desktop/src/tray.ts
 +++ b/apps/desktop/src/tray.ts
 @@ -1,11 +1,12 @@
@@ -161,10 +161,10 @@ index b2ce416b..1764a250 100644
    readonly locale: () => DesktopLocale
    /** Show and focus the primary window. */
 diff --git a/apps/desktop/tests/main-startup.spec.ts b/apps/desktop/tests/main-startup.spec.ts
-index 0f661c74..8d49aba6 100644
+index ef65b37c6b..866267febe 100644
 --- a/apps/desktop/tests/main-startup.spec.ts
 +++ b/apps/desktop/tests/main-startup.spec.ts
-@@ -850,8 +850,10 @@ describe('desktop main startup', () => {
+@@ -856,8 +856,10 @@ describe('desktop main startup', () => {
      harness.ipcOn.mock.calls.find(([channel]) => channel === DESKTOP_IPC.localeChanged)![1](
        { sender, senderFrame: sender.mainFrame }, nextLocale,
      )

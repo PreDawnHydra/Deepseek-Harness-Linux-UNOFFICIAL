@@ -1,5 +1,5 @@
 diff --git a/apps/desktop/scripts/dev.ts b/apps/desktop/scripts/dev.ts
-index 37515c20..bf23b406 100644
+index 0753678c0a..047e7dc05c 100644
 --- a/apps/desktop/scripts/dev.ts
 +++ b/apps/desktop/scripts/dev.ts
 @@ -8,6 +8,7 @@ import { parseArgs } from 'node:util'
@@ -9,7 +9,7 @@ index 37515c20..bf23b406 100644
 +import { desktopNodeRuntime } from '../src/node-environment.ts'
  import { prepareDevelopmentProject } from './development-project.ts'
  import { prepareDevelopmentApp } from './development-app.ts'
- import { preparePrimaryRuntime } from './prepare-primary-runtime.ts'
+ import { prepareDevelopmentState } from './development-state.ts'
 @@ -104,12 +105,17 @@ async function main(): Promise<void> {
    }
    const version = packageVersion(join(APP_ROOT, 'package.json'), 'desktop package')
@@ -39,7 +39,7 @@ index 37515c20..bf23b406 100644
  }
  
 diff --git a/apps/desktop/scripts/sign-primary-runtime.ts b/apps/desktop/scripts/sign-primary-runtime.ts
-index a15e3786..4dde1a7d 100644
+index a15e378625..4dde1a7d03 100644
 --- a/apps/desktop/scripts/sign-primary-runtime.ts
 +++ b/apps/desktop/scripts/sign-primary-runtime.ts
 @@ -76,7 +76,8 @@ async function main(): Promise<void> {
@@ -53,7 +53,7 @@ index a15e3786..4dde1a7d 100644
          } else {
            await signWindowsPrimaryRuntime(join(paths.runtime, 'primary-runtime'), { ...options, smoke: smokePrimaryRuntime })
 diff --git a/apps/desktop/scripts/smoke-packaged-runtime.ts b/apps/desktop/scripts/smoke-packaged-runtime.ts
-index 6c3c12c8..6cd8184a 100644
+index 6c3c12c857..6cd8184a96 100644
 --- a/apps/desktop/scripts/smoke-packaged-runtime.ts
 +++ b/apps/desktop/scripts/smoke-packaged-runtime.ts
 @@ -2,6 +2,7 @@
@@ -97,7 +97,7 @@ index 6c3c12c8..6cd8184a 100644
 +await smokePreparedRuntime(join(appRoot, 'dsh'),
 +  desktopNodeRuntime(packaged.platform, executable, join(resourcesRuntime, 'primary-runtime')), resourcesRuntime, descriptor)
 diff --git a/apps/desktop/scripts/smoke-prepared-runtime.ts b/apps/desktop/scripts/smoke-prepared-runtime.ts
-index a67bc28c..0fbc8107 100644
+index a67bc28c2a..0fbc810799 100644
 --- a/apps/desktop/scripts/smoke-prepared-runtime.ts
 +++ b/apps/desktop/scripts/smoke-prepared-runtime.ts
 @@ -5,7 +5,7 @@ import { tmpdir } from 'node:os'
@@ -148,7 +148,7 @@ index a67bc28c..0fbc8107 100644
      await rm(cache, { recursive: true, force: true })
    }
 diff --git a/apps/desktop/scripts/smoke-runtime.ts b/apps/desktop/scripts/smoke-runtime.ts
-index fa2b2f5c..bc303ef5 100644
+index e06f95c774..9e202ed30e 100644
 --- a/apps/desktop/scripts/smoke-runtime.ts
 +++ b/apps/desktop/scripts/smoke-runtime.ts
 @@ -9,6 +9,7 @@ import { promisify } from 'node:util'
@@ -186,7 +186,7 @@ index fa2b2f5c..bc303ef5 100644
        { cwd: home, env: { ...hostEnvironment, ELECTRON_RUN_AS_NODE: '1' }, timeout: 120_000, windowsHide: true })
      await runCli(['add', `file:${installedPlugin}`, '--offline', '--ignore-scripts'])
 diff --git a/apps/desktop/tests/fixtures/pnpm-smoke.mjs b/apps/desktop/tests/fixtures/pnpm-smoke.mjs
-index 5d16769a..26a671b6 100644
+index 5d16769ab4..26a671b602 100644
 --- a/apps/desktop/tests/fixtures/pnpm-smoke.mjs
 +++ b/apps/desktop/tests/fixtures/pnpm-smoke.mjs
 @@ -1,4 +1,4 @@
@@ -233,7 +233,7 @@ index 5d16769a..26a671b6 100644
 +  console.log('desktop pnpm: offline installation and shipped Node package script passed')
  }
 diff --git a/apps/desktop/tests/fixtures/runtime-payload-smoke.mjs b/apps/desktop/tests/fixtures/runtime-payload-smoke.mjs
-index 3cda38c6..2aec2410 100644
+index 3cda38c620..2aec2410ab 100644
 --- a/apps/desktop/tests/fixtures/runtime-payload-smoke.mjs
 +++ b/apps/desktop/tests/fixtures/runtime-payload-smoke.mjs
 @@ -1,4 +1,4 @@
@@ -252,7 +252,7 @@ index 3cda38c6..2aec2410 100644
  assert.equal(process.arch, descriptor.arch)
  const resourcesRuntime = process.argv[3] ?? join(dirname(root), 'runtime')
 diff --git a/apps/desktop/tests/prepared-runtime-smoke.spec.ts b/apps/desktop/tests/prepared-runtime-smoke.spec.ts
-index c4c840c0..0b21dc3b 100644
+index c4c840c009..0b21dc3ba6 100644
 --- a/apps/desktop/tests/prepared-runtime-smoke.spec.ts
 +++ b/apps/desktop/tests/prepared-runtime-smoke.spec.ts
 @@ -37,7 +37,8 @@ it('retains payload progress and termination details when the child fails', asyn
@@ -278,3 +278,16 @@ index c4c840c0..0b21dc3b 100644
    expect(payload.mock.calls[0]![1]).toEqual(expect.arrayContaining([root, resources]))
    expect(smokeDesktopRuntime).toHaveBeenCalledWith(root, electron, descriptor, expect.any(Object), resources)
    const environment = vi.mocked(smokeDesktopRuntime).mock.calls[0]![3]
+diff --git a/apps/desktop/tests/smoke-runtime.spec.ts b/apps/desktop/tests/smoke-runtime.spec.ts
+index dc318c4424..61bdb9bfb9 100644
+--- a/apps/desktop/tests/smoke-runtime.spec.ts
++++ b/apps/desktop/tests/smoke-runtime.spec.ts
+@@ -104,7 +104,7 @@ it('uses the private readiness Cookie for every packaged runtime HTTP probe', as
+     return { stdout: '', stderr: '' }
+   })
+   vi.spyOn(console, 'log').mockImplementation(() => {})
+-  await smokeDesktopRuntime(join(root, 'payload'), process.execPath, runtime, {}, resources)
++  await smokeDesktopRuntime(join(root, 'payload'), { executable: process.execPath, electron: true }, runtime, {}, resources)
+   expect(requests.map(request => request.path)).toEqual([
+     '/', '/desktop-smoke', '/desktop-smoke-install', '/desktop-smoke-installed', '/desktop-smoke-skills',
+     '/desktop-smoke-office/docx', '/desktop-smoke-office/xlsx', '/desktop-smoke-office/pptx',

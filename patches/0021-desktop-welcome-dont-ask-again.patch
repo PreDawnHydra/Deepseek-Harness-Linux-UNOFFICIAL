@@ -1,5 +1,5 @@
 diff --git a/apps/desktop/renderer/welcome.css b/apps/desktop/renderer/welcome.css
-index 3b4da2de..b869d575 100644
+index 3b4da2defb..b869d57564 100644
 --- a/apps/desktop/renderer/welcome.css
 +++ b/apps/desktop/renderer/welcome.css
 @@ -341,3 +341,37 @@ body {
@@ -41,7 +41,7 @@ index 3b4da2de..b869d575 100644
 +  opacity: 0.4;
 +}
 diff --git a/apps/desktop/src/client/WelcomePage.tsx b/apps/desktop/src/client/WelcomePage.tsx
-index b3670617..db63410f 100644
+index 6a63dc7249..7ad5506e75 100644
 --- a/apps/desktop/src/client/WelcomePage.tsx
 +++ b/apps/desktop/src/client/WelcomePage.tsx
 @@ -27,6 +27,7 @@ export function Welcome({ api }: { api: WelcomeApi }) {
@@ -61,7 +61,7 @@ index b3670617..db63410f 100644
        if (mounted.current) setDraft('')
      } catch {
        if (mounted.current) setError(m.welcomeContinueFailed)
-@@ -213,6 +214,11 @@ export function Welcome({ api }: { api: WelcomeApi }) {
+@@ -214,6 +215,11 @@ export function Welcome({ api }: { api: WelcomeApi }) {
          <button ref={keyButton} id="api-key" className="secondary" type="button" onClick={() => { void api.analytics?.('auth_page_click', { button_name: 'api-key' }); navigate('key') }}>{m.welcomeApiKey}</button>
        </div>
        <div id="key-actions" className="actions" hidden={page !== 'key'}>
@@ -74,10 +74,10 @@ index b3670617..db63410f 100644
          <button id="skip-key" className="secondary" type="button" disabled={busy} onClick={() => { void skip() }}>{m.welcomeKeyLater}</button>
          <button id="back-to-login" className="back" type="button" disabled={busy} onClick={() => {
 diff --git a/apps/desktop/src/locale.ts b/apps/desktop/src/locale.ts
-index 3e2db64e..4b3c7a1f 100644
+index ea261784b1..96f5348235 100644
 --- a/apps/desktop/src/locale.ts
 +++ b/apps/desktop/src/locale.ts
-@@ -98,6 +98,7 @@ export const en = {
+@@ -99,6 +99,7 @@ export const en = {
    welcomeKeyPlaceholder: 'Enter API key',
    welcomeKeySave: 'Save and continue',
    welcomeKeyLater: 'Set up later',
@@ -85,7 +85,7 @@ index 3e2db64e..4b3c7a1f 100644
    welcomeKeyBack: 'Back to sign in',
    welcomeSessionExpired: 'You have signed out of your account, please log in again.',
    welcomeKeyBlank: 'Enter an API key.',
-@@ -293,6 +294,7 @@ export const zh = {
+@@ -295,6 +296,7 @@ export const zh = {
    welcomeKeyPlaceholder: '输入 API 密钥',
    welcomeKeySave: '保存并继续',
    welcomeKeyLater: '稍后配置',
@@ -93,7 +93,7 @@ index 3e2db64e..4b3c7a1f 100644
    welcomeKeyBack: '返回登录',
    welcomeSessionExpired: '登录信息已失效，请重新登录',
    welcomeKeyBlank: '请输入 API 密钥。',
-@@ -486,6 +488,7 @@ export const ja = {
+@@ -489,6 +491,7 @@ export const ja = {
    welcomeKeyPlaceholder: 'APIキーを入力',
    welcomeKeySave: '保存して続行',
    welcomeKeyLater: '後で設定',
@@ -101,7 +101,7 @@ index 3e2db64e..4b3c7a1f 100644
    welcomeKeyBack: 'ログインに戻る',
    welcomeSessionExpired: 'アカウントからログアウトしました。再度ログインしてください。',
    welcomeKeyBlank: 'APIキーを入力してください。',
-@@ -679,6 +682,7 @@ export const es = {
+@@ -683,6 +686,7 @@ export const es = {
    welcomeKeyPlaceholder: 'Ingrese la clave API',
    welcomeKeySave: 'Guardar y continuar',
    welcomeKeyLater: 'Configurar más tarde',
@@ -109,7 +109,7 @@ index 3e2db64e..4b3c7a1f 100644
    welcomeKeyBack: 'Volver para iniciar sesión',
    welcomeSessionExpired: 'Has cerrado sesión en tu cuenta, inicia sesión nuevamente.',
    welcomeKeyBlank: 'Ingrese una clave API.',
-@@ -872,6 +876,7 @@ export const fr = {
+@@ -877,6 +881,7 @@ export const fr = {
    welcomeKeyPlaceholder: 'Entrez la clé API',
    welcomeKeySave: 'Enregistrer et continuer',
    welcomeKeyLater: 'Configurer plus tard',
@@ -117,7 +117,7 @@ index 3e2db64e..4b3c7a1f 100644
    welcomeKeyBack: 'Retour pour vous connecter',
    welcomeSessionExpired: 'Vous vous êtes déconnecté de votre compte, veuillez vous reconnecter.',
    welcomeKeyBlank: 'Entrez une clé API.',
-@@ -1065,6 +1070,7 @@ export const de = {
+@@ -1071,6 +1076,7 @@ export const de = {
    welcomeKeyPlaceholder: 'API-Schlüssel eingeben',
    welcomeKeySave: 'Speichern und fortfahren',
    welcomeKeyLater: 'Später einrichten',
@@ -125,7 +125,7 @@ index 3e2db64e..4b3c7a1f 100644
    welcomeKeyBack: 'Zurück zur Anmeldung',
    welcomeSessionExpired: 'Sie haben sich von Ihrem Konto abgemeldet. Bitte melden Sie sich erneut an.',
    welcomeKeyBlank: 'Geben Sie einen API-Schlüssel ein.',
-@@ -1258,6 +1264,7 @@ export const ru = {
+@@ -1265,6 +1271,7 @@ export const ru = {
    welcomeKeyPlaceholder: 'Введите ключ API',
    welcomeKeySave: 'Сохранить и продолжить',
    welcomeKeyLater: 'Настроить позже',
@@ -133,7 +133,7 @@ index 3e2db64e..4b3c7a1f 100644
    welcomeKeyBack: 'Вернуться для входа в систему',
    welcomeSessionExpired: 'Вы вышли из своей учетной записи, пожалуйста, войдите снова.',
    welcomeKeyBlank: 'Введите ключ API.',
-@@ -1451,6 +1458,7 @@ export const pt = {
+@@ -1459,6 +1466,7 @@ export const pt = {
    welcomeKeyPlaceholder: 'Insira a chave de API',
    welcomeKeySave: 'Salvar e continuar',
    welcomeKeyLater: 'Configurar mais tarde',
@@ -142,7 +142,7 @@ index 3e2db64e..4b3c7a1f 100644
    welcomeSessionExpired: 'Você saiu da sua conta, faça login novamente.',
    welcomeKeyBlank: 'Insira uma chave API.',
 diff --git a/apps/desktop/src/main.ts b/apps/desktop/src/main.ts
-index b6add2ec..7a7d6307 100644
+index 8917832d58..64f52a6d85 100644
 --- a/apps/desktop/src/main.ts
 +++ b/apps/desktop/src/main.ts
 @@ -50,6 +50,7 @@ import { OperationJournal } from './operation-journal.ts'
@@ -153,7 +153,7 @@ index b6add2ec..7a7d6307 100644
  import { connectDesktopWelcome, type DesktopWelcomeBackend } from './welcome-backend.ts'
  import { DesktopUpdateJournal } from './update-journal.ts'
  import { DesktopUpdatePreparationError } from './update-error.ts'
-@@ -1416,6 +1417,7 @@ async function main(): Promise<void> {
+@@ -1427,6 +1428,7 @@ async function main(): Promise<void> {
      }
    }
    let openingWelcome: Promise<void> | undefined
@@ -161,7 +161,7 @@ index b6add2ec..7a7d6307 100644
    const showWelcome = (): Promise<void> => {
      if (quitting) return Promise.resolve()
      if (welcomeWindow !== undefined && !welcomeWindow.isDestroyed()) {
-@@ -1452,10 +1454,15 @@ async function main(): Promise<void> {
+@@ -1463,10 +1465,15 @@ async function main(): Promise<void> {
            if (backend.host === undefined || welcomeBackend === undefined) return { ok: false }
            const saved = await welcomeBackend.save(apiKey)
            if (!saved.ok) return saved
@@ -178,7 +178,7 @@ index b6add2ec..7a7d6307 100644
        })
        const window = welcomeWindow
        window.once('closed', () => {
-@@ -1486,7 +1493,9 @@ async function main(): Promise<void> {
+@@ -1497,7 +1504,9 @@ async function main(): Promise<void> {
      writeDesktopLocaleCache(app.getPath('userData'), locale.id)
      windowsLanguage = locale.id
      refreshApplicationMenu()
@@ -190,7 +190,7 @@ index b6add2ec..7a7d6307 100644
        raiseAfterUpdate = false
        await showWelcome()
 diff --git a/apps/desktop/src/preload-welcome.ts b/apps/desktop/src/preload-welcome.ts
-index 6748367e..2f0e78d7 100644
+index 6748367e81..2f0e78d7a6 100644
 --- a/apps/desktop/src/preload-welcome.ts
 +++ b/apps/desktop/src/preload-welcome.ts
 @@ -24,6 +24,6 @@ const api: WelcomeApi = {
@@ -202,7 +202,7 @@ index 6748367e..2f0e78d7 100644
  }
  contextBridge.exposeInMainWorld('dshWelcome', api)
 diff --git a/apps/desktop/src/welcome-api.ts b/apps/desktop/src/welcome-api.ts
-index c693f385..8958a770 100644
+index c693f385d6..8958a7705d 100644
 --- a/apps/desktop/src/welcome-api.ts
 +++ b/apps/desktop/src/welcome-api.ts
 @@ -47,10 +47,12 @@ export interface WelcomeOperations {
@@ -222,7 +222,7 @@ index c693f385..8958a770 100644
  /** The renderer receives localized copy, login operations, and safe account snapshots. */
 diff --git a/apps/desktop/src/welcome-skip.ts b/apps/desktop/src/welcome-skip.ts
 new file mode 100644
-index 00000000..f8b4541e
+index 0000000000..f8b4541ea1
 --- /dev/null
 +++ b/apps/desktop/src/welcome-skip.ts
 @@ -0,0 +1,32 @@
@@ -259,7 +259,7 @@ index 00000000..f8b4541e
 +  }
 +}
 diff --git a/apps/desktop/src/welcome-window.ts b/apps/desktop/src/welcome-window.ts
-index 364f5805..31f45fd9 100644
+index 364f580588..31f45fd940 100644
 --- a/apps/desktop/src/welcome-window.ts
 +++ b/apps/desktop/src/welcome-window.ts
 @@ -100,9 +100,10 @@ export async function openWelcomeWindow(locale: DesktopLocale, operations: Welco
@@ -276,7 +276,7 @@ index 364f5805..31f45fd9 100644
    ipcMain.handle(WELCOME_IPC.start, async (event) => { assertSender(event); return operations.startSignIn() })
    ipcMain.handle(WELCOME_IPC.cancel, async (event, id: unknown) => {
 diff --git a/apps/desktop/tests/welcome-renderer.client.spec.tsx b/apps/desktop/tests/welcome-renderer.client.spec.tsx
-index 575c7423..834ea834 100644
+index 575c7423a0..834ea834ae 100644
 --- a/apps/desktop/tests/welcome-renderer.client.spec.tsx
 +++ b/apps/desktop/tests/welcome-renderer.client.spec.tsx
 @@ -132,6 +132,23 @@ describe('desktop welcome presentation', () => {
@@ -305,7 +305,7 @@ index 575c7423..834ea834 100644
      fireEvent.click(view.button('#api-key'))
 diff --git a/apps/desktop/tests/welcome-skip.spec.ts b/apps/desktop/tests/welcome-skip.spec.ts
 new file mode 100644
-index 00000000..f9bf20f5
+index 0000000000..f9bf20f570
 --- /dev/null
 +++ b/apps/desktop/tests/welcome-skip.spec.ts
 @@ -0,0 +1,25 @@
@@ -335,7 +335,7 @@ index 00000000..f9bf20f5
 +  })
 +})
 diff --git a/apps/desktop/tests/welcome-window.spec.ts b/apps/desktop/tests/welcome-window.spec.ts
-index 2100de70..d030f0b5 100644
+index 2100de70f0..d030f0b5cd 100644
 --- a/apps/desktop/tests/welcome-window.spec.ts
 +++ b/apps/desktop/tests/welcome-window.spec.ts
 @@ -134,6 +134,12 @@ describe('desktop welcome window', () => {

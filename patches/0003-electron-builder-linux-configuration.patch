@@ -1,9 +1,9 @@
 diff --git a/apps/desktop/scripts/electron-builder-config.mjs b/apps/desktop/scripts/electron-builder-config.mjs
-index d5522e3d..64aafc39 100644
+index a777a0582e..a08fdcc0d6 100644
 --- a/apps/desktop/scripts/electron-builder-config.mjs
 +++ b/apps/desktop/scripts/electron-builder-config.mjs
 @@ -23,7 +23,8 @@ import {
- import { resolveDesktopAutoUpdateConfig } from './desktop-auto-update-environment.mjs'
+ import { resolveDesktopAutoUpdateConfig } from '@deepseek-ai/dsh-desktop-publisher/desktop-auto-update-environment.mjs'
  import { resolveDesktopBuildCommit } from './desktop-build-commit.mjs'
  import { resolveDesktopBuildVersion } from './desktop-build-version.mjs'
 -import { resolveDesktopPolicyEnvironment } from './desktop-policy-environment.mjs'

@@ -1,5 +1,5 @@
 diff --git a/apps/desktop/.env.linux.example b/apps/desktop/.env.linux.example
-index 7185dc93..62d5dcde 100644
+index 7185dc9325..62d5dcdeab 100644
 --- a/apps/desktop/.env.linux.example
 +++ b/apps/desktop/.env.linux.example
 @@ -11,6 +11,12 @@ DSH_DESKTOP_APP_ID=com.deepseek.harness
@@ -16,7 +16,7 @@ index 7185dc93..62d5dcde 100644
  # Desktop clients as desktop-win or desktop-mac and has no Linux identity, and a Linux release carries
  # no update channel, so no policy decision could drive an action. A Linux application therefore embeds
 diff --git a/apps/desktop/scripts/desktop-linux-packages.d.mts b/apps/desktop/scripts/desktop-linux-packages.d.mts
-index 96c6e2df..f49e173e 100644
+index 96c6e2df5f..f49e173e2c 100644
 --- a/apps/desktop/scripts/desktop-linux-packages.d.mts
 +++ b/apps/desktop/scripts/desktop-linux-packages.d.mts
 @@ -32,3 +32,13 @@ export function resolveDesktopLinuxPackageMetadata(
@@ -34,7 +34,7 @@ index 96c6e2df..f49e173e 100644
 + */
 +export function resolveDesktopLinuxUpdateFeed(environment?: NodeJS.ProcessEnv): string | undefined
 diff --git a/apps/desktop/scripts/desktop-linux-packages.mjs b/apps/desktop/scripts/desktop-linux-packages.mjs
-index fd4e5886..c83177bc 100644
+index fd4e5886f5..c83177bc7d 100644
 --- a/apps/desktop/scripts/desktop-linux-packages.mjs
 +++ b/apps/desktop/scripts/desktop-linux-packages.mjs
 @@ -9,6 +9,12 @@ export const LINUX_MAINTAINER_ENV = 'DSH_DESKTOP_LINUX_MAINTAINER'
@@ -78,11 +78,11 @@ index fd4e5886..c83177bc 100644
    let url
    try { url = new URL(value) }
 diff --git a/apps/desktop/scripts/desktop-package-environment.mjs b/apps/desktop/scripts/desktop-package-environment.mjs
-index 79627c33..4a4b8425 100644
+index d17c68bd2a..0efc513165 100644
 --- a/apps/desktop/scripts/desktop-package-environment.mjs
 +++ b/apps/desktop/scripts/desktop-package-environment.mjs
 @@ -8,7 +8,7 @@ import { resolveDesktopAppId, resolveMacOSNotarizationEnvironment, resolveMacOSS
- import { resolveDesktopAutoUpdateConfig } from './desktop-auto-update-environment.mjs'
+ import { resolveDesktopAutoUpdateConfig } from '@deepseek-ai/dsh-desktop-publisher/desktop-auto-update-environment.mjs'
  import { createWindowsTokenSigner } from './windows-sign.mjs'
  import { desktopPlatformEmbedsPolicy, resolveDesktopPolicyEnvironment } from './desktop-policy-environment.mjs'
 -import { resolveDesktopLinuxFormats, resolveDesktopLinuxPackageMetadata } from './desktop-linux-packages.mjs'
@@ -108,10 +108,10 @@ index 79627c33..4a4b8425 100644
        throw new Error('desktop package: Linux artifacts are unsigned; pass --unsigned')
      }
 diff --git a/apps/desktop/scripts/electron-builder-config.mjs b/apps/desktop/scripts/electron-builder-config.mjs
-index 5376fae7..c0b1e7b0 100644
+index 152d7c0d91..5f09e2742e 100644
 --- a/apps/desktop/scripts/electron-builder-config.mjs
 +++ b/apps/desktop/scripts/electron-builder-config.mjs
-@@ -24,7 +24,7 @@ import { resolveDesktopAutoUpdateConfig } from './desktop-auto-update-environmen
+@@ -24,7 +24,7 @@ import { resolveDesktopAutoUpdateConfig } from '@deepseek-ai/dsh-desktop-publish
  import { resolveDesktopBuildCommit } from './desktop-build-commit.mjs'
  import { resolveDesktopBuildVersion } from './desktop-build-version.mjs'
  import { desktopPlatformEmbedsPolicy, resolveDesktopPolicyEnvironment } from './desktop-policy-environment.mjs'
@@ -143,7 +143,7 @@ index 5376fae7..c0b1e7b0 100644
    }
  }
 diff --git a/apps/desktop/tests/desktop-linux-packages.spec.ts b/apps/desktop/tests/desktop-linux-packages.spec.ts
-index 1e0a341f..db420463 100644
+index 1e0a341ffc..db420463db 100644
 --- a/apps/desktop/tests/desktop-linux-packages.spec.ts
 +++ b/apps/desktop/tests/desktop-linux-packages.spec.ts
 @@ -5,6 +5,7 @@ import {

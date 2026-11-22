@@ -18,8 +18,8 @@ This port is for people who want the native Desktop window, tray and bundled run
 
 | | |
 |---|---|
-| Upstream tag | `dsh-v0.2.2-rc.5` |
-| Upstream commit | `9c2670d3bce5275e0d1610272958121af87787bb` |
+| Upstream tag | `dsh-v0.2.3-alpha.1` |
+| Upstream commit | `d98f5d68519215da48f3002da2cb9c9d2068d81d` |
 
 The pin lives in [`upstream.env`](upstream.env).
 
